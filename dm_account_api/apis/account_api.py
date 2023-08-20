@@ -1,5 +1,3 @@
-import token
-
 from requests import Response
 from dm_account_api.models.registration_model import registration_model
 from dm_account_api.models.reset_password import reset_password

@@ -1,4 +1,4 @@
-from dm_account_api.services.dm_account_api import DmApiAccount
+from services.dm_account_api import DmApiAccount
 
 
 def test_put_v1_account_token():

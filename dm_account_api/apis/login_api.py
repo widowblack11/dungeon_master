@@ -25,7 +25,7 @@ class LoginApi:
         return response
 
     def delete_v1_account_login(self, **kwargs) -> Response:
-        """"
+        """
         Logout as current user
         :return:
         """
@@ -38,7 +38,7 @@ class LoginApi:
         return response
 
     def delete_v1_account_delete(self, **kwargs) -> Response:
-        """"
+        """
         Logout from every device
         :return:
         """

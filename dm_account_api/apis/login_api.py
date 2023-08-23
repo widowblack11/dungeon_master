@@ -1,13 +1,14 @@
 from requests import Response, session
 from dm_account_api.models.login_credentials import login_credentials
+from restclient.restclient import Restclient
 
 
 class LoginApi:
     def __init__(self, host, headers=None):
         self.host = host
-        self.session = session()
+        self.client = Restclient(host=host, headers=headers)
         if headers:
-            self.session.headers.update(headers)
+            self.client.session.headers.update(headers)
 
     def post_v1_account_login(self, json: login_credentials, **kwargs) -> Response:
         """
@@ -16,8 +17,8 @@ class LoginApi:
         :return:
         """
 
-        response = self.session.post(
-            url=f"{self.host}/v1/account/login",
+        response = self.client.post(
+            path=f"/v1/account/login",
             json=json,
             **kwargs
         )
@@ -30,8 +31,8 @@ class LoginApi:
         :return:
         """
 
-        response = self.session.delete(
-            url=f"{self.host}/v1/account/login",
+        response = self.client.delete(
+            path=f"/v1/account/login",
             **kwargs
         )
 
@@ -43,8 +44,8 @@ class LoginApi:
         :return:
         """
 
-        response = self.session.delete(
-            url=f"{self.host}/v1/account/login/all",
+        response = self.client.delete(
+            path=f"/v1/account/login/all",
             **kwargs
         )
 

@@ -1,5 +1,6 @@
 import time
 
+from dm_account_api.helpers.variables import login, password
 from services.dm_account_api import DmApiAccount
 from services.mailhog import MailhogApi
 import structlog
@@ -15,9 +16,9 @@ def test_post_v1_account():
     mailhog = MailhogApi(host='http://5.63.153.31:5025')
     api = DmApiAccount(host='http://5.63.153.31:5051')
     json = {
-        "login": "test_vvvv_13998",
+        "login": login,
         "email": "8299944dkdkdk@mail.ru",
-        "password": "test_vvvv_13998"
+        "password": password
     }
     response_create = api.account.post_v1_account(json=json)
     assert response_create.status_code == 201
@@ -26,8 +27,8 @@ def test_post_v1_account():
     response_activate = api.account.put_v1_account_token(token=token)
     assert response_activate.status_code == 200
     json_email = {
-        "login": "test_vvvv_13998",
-        "password": "test_vvvv_13998",
+        "login": login,
+        "password": password,
         "email": "other_email3@mail.ru"
     }
     response_change_email = api.account.put_v1_account_email(json=json_email)

@@ -1,5 +1,6 @@
 from requests import Response, session
-from dm_account_api.models.login_credentials import login_credentials
+from dm_account_api.models.login_credentials import LoginCredentialsModel
+from dm_account_api.models.user_envelope import UserEnvelope
 from restclient.restclient import Restclient
 
 
@@ -10,7 +11,7 @@ class LoginApi:
         if headers:
             self.client.session.headers.update(headers)
 
-    def post_v1_account_login(self, json: login_credentials, **kwargs) -> Response:
+    def post_v1_account_login(self, json: LoginCredentialsModel, **kwargs) -> Response:
         """
         :param json login_credentials
         Authenticate via credentials
@@ -19,10 +20,10 @@ class LoginApi:
 
         response = self.client.post(
             path=f"/v1/account/login",
-            json=json,
+            json=json.dict(by_alias=True, exclude_none=True),
             **kwargs
         )
-
+        UserEnvelope(**response.json())
         return response
 
     def delete_v1_account_login(self, **kwargs) -> Response:

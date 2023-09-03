@@ -1,7 +1,7 @@
-from requests import Response, session
-from dm_account_api.models.login_credentials import LoginCredentialsModel
-from dm_account_api.models.user_envelope import UserEnvelope
+from requests import Response
+from ..models import *
 from restclient.restclient import Restclient
+from ..utilities import validation_request_json, validate_status_code
 
 
 class LoginApi:
@@ -11,8 +11,10 @@ class LoginApi:
         if headers:
             self.client.session.headers.update(headers)
 
-    def post_v1_account_login(self, json: LoginCredentialsModel, **kwargs) -> Response:
+    def post_v1_account_login(self, json: LoginCredentials, status_code: int = 200,  **kwargs) -> \
+            Response | UserEnvelope:
         """
+        :param status_code:
         :param json login_credentials
         Authenticate via credentials
         :return:
@@ -20,13 +22,15 @@ class LoginApi:
 
         response = self.client.post(
             path=f"/v1/account/login",
-            json=json.dict(by_alias=True, exclude_none=True),
+            json=validation_request_json(json=json),
             **kwargs
         )
-        UserEnvelope(**response.json())
+        validate_status_code(response, status_code)
+        if response.status_code == 200:
+            return UserEnvelope(**response.json())
         return response
 
-    def delete_v1_account_login(self, **kwargs) -> Response:
+    def delete_v1_account_login(self, status_code: int = 204, **kwargs) -> Response:
         """
         Logout as current user
         :return:
@@ -36,10 +40,10 @@ class LoginApi:
             path=f"/v1/account/login",
             **kwargs
         )
-
+        validate_status_code(response, status_code)
         return response
 
-    def delete_v1_account_delete(self, **kwargs) -> Response:
+    def delete_v1_account_delete(self, status_code: int = 204, **kwargs) -> Response:
         """
         Logout from every device
         :return:
@@ -49,5 +53,5 @@ class LoginApi:
             path=f"/v1/account/login/all",
             **kwargs
         )
-
+        validate_status_code(response, status_code)
         return response

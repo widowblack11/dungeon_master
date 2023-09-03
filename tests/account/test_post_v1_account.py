@@ -1,9 +1,11 @@
 import time
 
+from hamcrest import assert_that, has_properties
+
 from services.dm_account_api import DmApiAccount
 from services.mailhog import MailhogApi
 import structlog
-from dm_account_api.models.registration_model import RegistrationModel
+from dm_account_api.models.registration_model import Registration
 
 structlog.configure(
     processors=[
@@ -15,15 +17,21 @@ structlog.configure(
 def test_post_v1_account():
     mailhog = MailhogApi(host='http://5.63.153.31:5025')
     api = DmApiAccount(host='http://5.63.153.31:5051')
-    json = RegistrationModel(
-        login="test_55vv_139991",
-        email="199944dgghkdk@mail.ru",
-        password="ttest_55vv_139991"
+    json = Registration(
+        login="test2_5f5dvv_1399982",
+        email="12929f44ddggh8kdk@mail.ru",
+        password="tte2sfdt8_25vv_139991"
     )
-    response_create = api.account.post_v1_account(json=json)
-    assert response_create.status_code == 201
+    api.account.post_v1_account(json=json)
     time.sleep(2)
     token = mailhog.get_token_from_last_email()
-    response_activate = api.account.put_v1_account_token(token=token)
-    assert response_activate.status_code == 200
+    response = api.account.put_v1_account_token(token=token, status_code=200)
+    assert_that(response.resource.rating, has_properties(
+        {
+            "enabled": True,
+            "quality": 0,
+            "quantity": 0
+        }
+    ))
+
 

@@ -3,3 +3,4 @@ requests==2.31.0
 structlog
 curlify
 pydantic
+pyhamcrest

@@ -3,9 +3,8 @@ import time
 from hamcrest import assert_that, has_properties
 
 from dm_account_api.models.change_email import ChangeEmail
-from dm_account_api.models.user_envelope import UserRole
 from services.dm_account_api import DmApiAccount
-from services.mailhog import MailhogApi
+from generic.heplpes.mailhog import MailhogApi
 import structlog
 
 structlog.configure(
@@ -26,16 +25,16 @@ def test_post_v1_account():
         email="113992d94rdd4dgghkdk@mail.ru",
         password=password
     )
-    api.account.post_v1_account(json=json)
+    api.account_api.post_v1_account(json=json)
     time.sleep(2)
     token = mailhog.get_token_from_last_email()
-    api.account.put_v1_account_token(token=token, status_code=200)
+    api.account_api.put_v1_account_token(token=token, status_code=200)
     json_email = ChangeEmail(
         login=login,
         email="rtr29244ddgdghkddk@mail.ru",
         password=password
     )
-    response = api.account.put_v1_account_email(json=json_email)
+    response = api.account_api.put_v1_account_email(json=json_email)
     print(response)
     assert_that(response.resource, has_properties(
         {

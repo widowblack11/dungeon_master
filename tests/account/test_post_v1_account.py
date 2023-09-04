@@ -2,10 +2,10 @@ import time
 
 from hamcrest import assert_that, has_properties
 
-from services.dm_account_api import DmApiAccount
-from services.mailhog import MailhogApi
+from dm_account_api.models import UserDetailsEnvelope
+from services.dm_account_api import Facade
+
 import structlog
-from dm_account_api.models.registration_model import Registration
 
 structlog.configure(
     processors=[
@@ -15,17 +15,17 @@ structlog.configure(
 
 
 def test_post_v1_account():
-    mailhog = MailhogApi(host='http://5.63.153.31:5025')
-    api = DmApiAccount(host='http://5.63.153.31:5051')
-    json = Registration(
-        login="test2_5f5dvv_1399982",
-        email="12929f44ddggh8kdk@mail.ru",
-        password="tte2sfdt8_25vv_139991"
+    api = Facade(host='http://5.63.153.31:5051')
+    login = "test2_53f5dsdvv_134d212909982"
+    email = "12929f44ddgds3gh8k4ddk221@9mail.ru"
+    password = "tte2s3fddst8_25v0d2124v_139991"
+    response = api.account.register_new_user(
+        login=login,
+        email=email,
+        password=password
     )
-    api.account.post_v1_account(json=json)
     time.sleep(2)
-    token = mailhog.get_token_from_last_email()
-    response = api.account.put_v1_account_token(token=token, status_code=200)
+    response = api.account.activate_registered_user()
     assert_that(response.resource.rating, has_properties(
         {
             "enabled": True,
@@ -33,5 +33,10 @@ def test_post_v1_account():
             "quantity": 0
         }
     ))
+    api.login.login_user(
+        login=login,
+        password=password
+    )
+
 
 

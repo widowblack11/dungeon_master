@@ -16,16 +16,16 @@ structlog.configure(
 
 def test_post_v1_account():
     api = Facade(host='http://5.63.153.31:5051')
-    login = "test2_53f5dsdvv_134d212909982"
-    email = "12929f44ddgds3gh8k4ddk221@9mail.ru"
-    password = "tte2s3fddst8_25v0d2124v_139991"
+    login = "email_te4fddst00d888837"
+    email = "в@9maidf4ldd.ru"
+    password = "tted2dfds423fddвe2st8_25v0d2124v_139991"
     response = api.account.register_new_user(
         login=login,
         email=email,
         password=password
     )
     time.sleep(2)
-    response = api.account.activate_registered_user()
+    response = api.account.activate_registered_user(login=login)
     assert_that(response.resource.rating, has_properties(
         {
             "enabled": True,
@@ -37,6 +37,10 @@ def test_post_v1_account():
         login=login,
         password=password
     )
+
+
+
+
 
 
 

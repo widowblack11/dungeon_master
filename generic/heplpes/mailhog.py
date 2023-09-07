@@ -1,8 +1,8 @@
 import json
 import time
 
-import requests
-from requests import session, Response
+
+from requests import Response
 from restclient.restclient import Restclient
 
 
@@ -60,12 +60,23 @@ class MailhogApi:
             user_data = json.loads(email['Content']['Body'])
             if login == user_data.get('Login'):
                 token = user_data['ConfirmationLinkUrl'].split('/')[-1]
-                print(token)
                 return token
         time.sleep(2)
         print('попытка')
         return self.get_token_by_login(login=login, attempt=attempt - 1)
 
+# if __name__ == '__main__':
+#    MailhogApi().get_api_v2_messages(limit=1)
 
-if __name__ == '__main__':
-    MailhogApi().get_api_v2_messages(limit=1)
+    def get_reset_password_token_by_login(self, login: str, attempt=50):
+        if attempt == 0:
+            raise AssertionError(f'Не удалось получить письмо с логином {login}')
+        emails = self.get_api_v2_messages(limit=100).json()['items']
+        for email in emails:
+            user_data = json.loads(email['Content']['Body'])
+            if login == user_data.get('Login'):
+                token = user_data['ConfirmationLinkUri'].split('/')[-1]
+                return token
+        time.sleep(2)
+        print('попытка')
+        return self.get_reset_password_token_by_login(login=login, attempt=attempt - 1)

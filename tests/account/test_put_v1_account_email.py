@@ -3,9 +3,11 @@ import time
 from hamcrest import assert_that, has_properties
 
 from dm_account_api.models.change_email import ChangeEmail
-from services.dm_account_api import DmApiAccount
+
 from generic.heplpes.mailhog import MailhogApi
 import structlog
+
+from services.dm_account_api import Facade
 
 structlog.configure(
     processors=[
@@ -13,22 +15,20 @@ structlog.configure(
     ]
 )
 
-login = "test_5d5ddvv_2r13999131"
-password = "ttedsddt_5r5vv_139991231"
+login = "test_5d5ddvv_2rc13999131"
+password = "ttedsddt_5r5cvv_139991231"
 
 
 def test_post_v1_account():
-    mailhog = MailhogApi(host='http://5.63.153.31:5025')
-    api = DmApiAccount(host='http://5.63.153.31:5051')
+    api = Facade(host='http://5.63.153.31:5051')
     json = ChangeEmail(
         login=login,
-        email="113992d94rdd4dgghkdk@mail.ru",
+        email="113992d94rcdd4dgghkdk@mail.ru",
         password=password
     )
     api.account_api.post_v1_account(json=json)
     time.sleep(2)
-    token = mailhog.get_token_from_last_email()
-    api.account_api.put_v1_account_token(token=token, status_code=200)
+    api.account.activate_registered_user(login=login)
     json_email = ChangeEmail(
         login=login,
         email="rtr29244ddgdghkddk@mail.ru",

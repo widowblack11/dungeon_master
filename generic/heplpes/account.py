@@ -6,6 +6,9 @@ class Account:
         from services.dm_account_api import Facade
         self.facade: Facade = facade
 
+    def set_headers(self, headers):
+        self.facade.account_api.client.session.headers.update(headers)
+
     def register_new_user(self, login: str, email: str, password: str):
         response = self.facade.account_api.post_v1_account(
             json=Registration(
@@ -21,4 +24,8 @@ class Account:
         response = self.facade.account_api.put_v1_account_token(
             token=token
         )
+        return response
+
+    def get_current_user_info(self, **kwargs):
+        response = self.facade.account_api.get_v1_account(**kwargs)
         return response

@@ -2,5 +2,5 @@ pytest==7.4.0
 requests==2.31.0
 structlog
 curlify
-pydantic
+pydantic==2.3.0
 pyhamcrest

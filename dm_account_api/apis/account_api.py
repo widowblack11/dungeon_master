@@ -93,7 +93,7 @@ class AccountApi:
 
         response = self.client.put(
             path=f"/v1/account/password",
-            json=validation_request_json(json),
+            json=json,
             **kwargs
         )
         validate_status_code(response, status_code)

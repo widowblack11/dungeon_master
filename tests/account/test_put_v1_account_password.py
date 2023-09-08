@@ -14,10 +14,10 @@ structlog.configure(
 
 def test_put_v1_account_password():
     api = Facade(host='http://5.63.153.31:5051')
-    login = "emai7ddd2dl00409996e_t03ddde44fdjdst00d888837"
-    email = "в@9m7ddda02i00490ed7d30dddf44lkdd.ru"
-    password = "tt7dde20d4009d0ed072ddd3d4fmds423fddвe2st8_25v0d2124v_139991"
-    new_password = "ttd8d3e002090d040ded72ddd3d4fmds423fddвe2st8_25v0d2124v_139991"
+    login = "emai7ddd2ddl004c09996e_t03ddde44fdjdst00d888837"
+    email = "в@9m7ddda0d2i0c0490ed7d30dddf44lkdd.ru"
+    password = "tt7dde20dd40c09d0ed072ddd3d4fmds423fddвe2st8_25v0d2124v_139991"
+    new_password = "ttd8dd3e0c02090d040ded72ddd3d4fmds423fddвe2st8_25v0d2124v_139991"
     api.account.register_new_user(
         login=login,
         email=email,
@@ -44,7 +44,7 @@ def test_put_v1_account_password():
             token=str(token_in_body),
             oldPassword=password,
             newPassword=new_password
-        )
+        ).model_dump(mode="json")
     )
 
 

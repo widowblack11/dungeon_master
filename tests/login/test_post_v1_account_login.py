@@ -4,7 +4,7 @@ import structlog
 from poetry.console.commands import self
 
 from services.dm_account_api import Facade
-from generic.heplpes.mailhog import MailhogApi
+from generic.helpers.mailhog import MailhogApi
 
 structlog.configure(
     processors=[
@@ -15,9 +15,9 @@ structlog.configure(
 
 def test_post_v1_account():
     api = Facade(host='http://5.63.153.31:5051')
-    login = "tesf;0't[,p_vpvvv_139921"
-    email = "12990f'9l,[4pp4dkdkdk@mail.ru"
-    password = "te0f]/s,pp3kt_vvvv_139921"
+    login = "tesf;d0w't[,p_vpvvv_139921"
+    email = "12990fdw'9l,[4pp4dkdkdk@mail.ru"
+    password = "te0dwf]/s,pp3kt_vvvv_139921"
     json = {
         "login": login,
         "email": email,

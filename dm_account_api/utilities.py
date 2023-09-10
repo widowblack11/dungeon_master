@@ -5,7 +5,7 @@ from pydantic import BaseModel
 def validation_request_json(json: str | BaseModel):
     if isinstance(json, dict):
         return json
-    return json.dict(by_alias=True, exclude_none=True)
+    return json.model_dump(by_alias=True, exclude_none=True, mode='json')
 
 
 def validate_status_code(response: requests.Response, status_code: int):

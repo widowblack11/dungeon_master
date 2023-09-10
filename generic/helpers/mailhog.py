@@ -80,3 +80,6 @@ class MailhogApi:
         time.sleep(2)
         print('попытка')
         return self.get_reset_password_token_by_login(login=login, attempt=attempt - 1)
+
+
+

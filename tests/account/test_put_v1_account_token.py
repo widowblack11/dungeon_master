@@ -13,15 +13,15 @@ structlog.configure(
         structlog.processors.JSONRenderer(indent=4, sort_keys=True, ensure_ascii=False)
     ]
 )
-login = "te3s4ftf_3535vev_132999014"
+login = "te3s4ftf_x3535vev_132999014"
 
 
 def test_put_v1_account_token():
     api = Facade(host='http://5.63.153.31:5051')
     json = Registration(
         login=login,
-        email="1909ff39344342d4egghkdk@mail.ru",
-        password="ttf3f443e30e2st_55vv_1399491"
+        email="1909ff3x9344342d4egghkdk@mail.ru",
+        password="ttf3xf443e30e2st_55vv_1399491"
     )
     api.account_api.post_v1_account(json=json)
     time.sleep(2)

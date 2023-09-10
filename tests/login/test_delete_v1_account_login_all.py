@@ -5,9 +5,9 @@ from services.dm_account_api import Facade
 
 def test_delete_v1_account_login_all():
     api = Facade(host='http://5.63.153.31:5051')
-    login = "em0ail_td3de44fddst00d888837"
-    email = "в@9ma-id3ddf44ldd.ru"
-    password = "tt0ed2dd3d4fds423fddвe2st8_25v0d2124v_139991"
+    login = "em0aidl_td3de44fddst00d888837"
+    email = "в@9ma-did3ddf44ldd.ru"
+    password = "tt0edd2dd3d4fds423fddвe2st8_25v0d2124v_139991"
     api.account.register_new_user(
         login=login,
         email=email,

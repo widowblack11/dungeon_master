@@ -4,3 +4,5 @@ structlog
 curlify
 pydantic==2.3.0
 pyhamcrest
+records
+psycopg2-binary

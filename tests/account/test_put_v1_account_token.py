@@ -24,7 +24,6 @@ def test_put_v1_account_token():
         password="ttf3xf443e30e2st_55vv_1399491"
     )
     api.account_api.post_v1_account(json=json)
-    time.sleep(2)
     response = api.account.activate_registered_user(login=login)
     assert_that(response.resource, has_properties(
         {

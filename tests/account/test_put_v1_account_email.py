@@ -26,14 +26,12 @@ def test_post_v1_account():
         password=password
     )
     api.account_api.post_v1_account(json=json)
-    time.sleep(2)
     api.account.activate_registered_user(login=login)
     response = api.account.change_email_for_user(
         login=login,
         email="rtr2924f4gddgdghkddk@mail.ru",
         password=password
     )
-    print(response)
     assert_that(response.resource, has_properties(
         {
             "medium_picture_url": None,

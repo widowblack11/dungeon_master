@@ -13,7 +13,6 @@ def test_delete_v1_account_login():
         email=email,
         password=password
     )
-    time.sleep(2)
     api.account.activate_registered_user(login=login)
     api.login.login_user(
         login=login,

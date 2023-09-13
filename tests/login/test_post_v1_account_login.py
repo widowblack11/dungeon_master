@@ -24,7 +24,6 @@ def test_post_v1_account():
         "password": password
     }
     api.account_api.post_v1_account(json=json)
-    time.sleep(2)
     api.account.activate_registered_user(login=login)
     api.login.login_user(
         login=login,

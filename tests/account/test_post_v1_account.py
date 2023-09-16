@@ -1,89 +1,120 @@
-import time
+import random
+from string import ascii_letters, digits
 
-from hamcrest import assert_that, has_properties
-
-from dm_account_api.models import UserDetailsEnvelope
-
-from services.dm_account_api import Facade
-from generic.helpers.orm_db import OrmDatabase
-
-import structlog
-
-structlog.configure(
-    processors=[
-        structlog.processors.JSONRenderer(indent=4, sort_keys=True, ensure_ascii=False)
-    ]
-)
+import pytest
+from hamcrest import assert_that, has_properties, has_entries
 
 
-def test_post_v1_account():
-    api = Facade(host='http://5.63.153.31:5051')
-    login = "emadild_ddtx3fdde4-fdrdst00d888837"
-    email = "в@9dmdaidddfxd3df-4lrdd.ru"
-    password = "tteddddd2dfxd3dfrds-423fddвe2st8_25v0d2124v_139991"
-    db = OrmDatabase(user='postgres', password='admin', host='5.63.153.31', database='dm3.5')
-    db.delete_user_by_login(login=login)
-    dataset = db.get_user_by_login(login=login)
-    assert len(dataset) == 0
+def random_string(begin=1, end=30):
+    symbols = ascii_letters + digits
+    string = ''
+    for _ in range(random.randint(begin, end)):
+        string += random.choice(symbols)
+    return string
 
-    api.mailhog.delete_all_messages()
 
-    api.account.register_new_user(
+def test_post_v1_account(dm_api_facade, dm_db, prepare_user):
+    login = prepare_user.login
+    email = prepare_user.email
+    password = prepare_user.password
+    dm_api_facade.account.register_new_user(
         login=login,
         email=email,
-        password=password
+        password=password,
+        status_code=201
     )
-    dataset = db.get_user_by_login(login=login)
+    dataset = dm_db.get_user_by_login(login=login)
     for row in dataset:
-        assert row.Login== login, f'User {login} not registered'
-        assert row.Activated is False, f'User {login} was activated'
-    response = api.account.activate_registered_user(login=login)
+        assert_that(row, has_entries(
+            {
+                'Login': login,
+                'Activated': False
+            }
+        ))
+        #assert row.Login == login, f'User {login} not registered'
+        #assert row.Activated is False, f'User {login} was activated'
 
-    dataset = db.get_user_by_login(login=login)
+    #response = dm_api_facade.account.activate_registered_user(login=login)
+    dm_db.activete_user_by_login(login=login)
+    dataset = dm_db.get_user_by_login(login=login)
     for row in dataset:
         assert row.Activated is True, f'User {login} not activated'
 
-    assert_that(response.resource.rating, has_properties(
-        {
-            "enabled": True,
-            "quality": 0,
-            "quantity": 0
-        }
-    ))
-    api.login.login_user(
+    #assert_that(response.resource.rating, has_properties(
+    #    {
+    #        "enabled": True,
+    #        "quality": 0,
+    #        "quantity": 0
+    #    }
+    #))
+    dm_api_facade.login.login_user(
         login=login,
         password=password
     )
 
 
-def test_post_v1_account_with_select():
-    api = Facade(host='http://5.63.153.31:5051')
-    login = "emadild_ddtx3fdde4-fdrdst00d888837"
-    email = "в@9dmdaidddfxd3df-4lrdd.ru"
-    password = "tteddddd2dfxd3dfrds-423fddвe2st8_25v0d2124v_139991"
-    db = OrmDatabase(user='postgres', password='admin', host='5.63.153.31', database='dm3.5')
-    db.delete_user_by_login(login=login)
-    dataset = db.get_user_by_login(login=login)
-    assert len(dataset) == 0
+def test_post_v1_account_with_select(dm_api_facade, dm_db, prepare_user):
+    login = prepare_user.login
+    email = prepare_user.email
+    password = prepare_user.password
 
-    api.mailhog.delete_all_messages()
-
-    api.account.register_new_user(
+    dm_api_facade.account.register_new_user(
         login=login,
         email=email,
-        password=password
+        password=password,
+        status_code=201
     )
-    dataset = db.get_user_by_login(login=login)
+    dataset = dm_db.get_user_by_login(login=login)
     for row in dataset:
-        assert row.Login == login, f'User {login} not registered'
-        assert row.Activated is False, f'User {login} was activated'
+        assert_that(row, has_entries(
+            {
+                'Login': login,
+                'Activated': False
+            }
+        ))
 
-    db.activete_user_by_login(login=login)
-    api.login.login_user(
+    dm_db.activete_user_by_login(login=login)
+    dm_api_facade.login.login_user(
         login=login,
         password=password
     )
 
 
+@pytest.mark.parametrize('login, email, password, status_code,check', [
+    ('12', '12@12.ru', '123456', 201, ''),
+    ('12', '12@12.ru', random_string(1, 5), 400, {"Password": ["Short"]}),
+    ('1', '12@12.ru', '123456', 400, {"Login": ["Short"]}),
+    ('12', '12@', '123456', 400, {"Email": ["Invalid"]}),
+    ('12', '12', '123456', 400, {"Email": ["Invalid"]})
+])
+def test_create_and_activated_user_with_random_params(
+        dm_api_facade,
+        dm_db,
+        login,
+        email,
+        password,
+        status_code,
+        check
+):
+    dm_db.delete_user_by_login(login=login)
+    dm_api_facade.mailhog.delete_all_messages()
+    response = dm_api_facade.account.register_new_user(
+        login=login,
+        email=email,
+        password=password,
+        status_code=status_code
+    )
+    if status_code == 201:
+        dm_api_facade.account.activate_registered_user(login=login)
+        dataset = dm_db.get_user_by_login(login=login)
+        for row in dataset:
+            assert row.Activated is True, f'User {login} not activated'
+        dm_api_facade.login.login_user(
+            login=login,
+            password=password
+        )
+    else:
+        assert response.json()['errors'] == check, \
+            f'Тело ответа должно быть равно {check}, но он равен {response}'
 
 

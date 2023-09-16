@@ -11,7 +11,7 @@ def decorator(fn):
         for i in range(5):
             response = fn(*args, **kwargs)
             emails = response.json()['items']
-            if len(emails) < 5:
+            if len(emails) < 1:
                 print(f'attemt {i}')
                 time.sleep(2)
                 continue
@@ -26,7 +26,6 @@ class MailhogApi:
         self.host = host
         self.client = Restclient(host=host)
 
-    @decorator
     def get_api_v2_messages(self, limit: int = 50) -> Response:
         """
         Get messages by limit

@@ -1,30 +1,19 @@
-import time
-
 from dm_account_api.models.registration_model import Registration
-
-from services.dm_account_api import Facade
-
-import structlog
 from dm_account_api.models.user_envelope import UserRole
 from hamcrest import assert_that, has_properties
 
-structlog.configure(
-    processors=[
-        structlog.processors.JSONRenderer(indent=4, sort_keys=True, ensure_ascii=False)
-    ]
-)
-login = "te3s4ftf_x3535vev_132999014"
 
-
-def test_put_v1_account_token():
-    api = Facade(host='http://5.63.153.31:5051')
+def test_put_v1_account_token(dm_api_facade, prepare_user):
+    login = prepare_user.login
+    email = prepare_user.email
+    password = prepare_user.password
     json = Registration(
         login=login,
-        email="1909ff3x9344342d4egghkdk@mail.ru",
-        password="ttf3xf443e30e2st_55vv_1399491"
+        email=email,
+        password=password
     )
-    api.account_api.post_v1_account(json=json)
-    response = api.account.activate_registered_user(login=login)
+    dm_api_facade.account_api.post_v1_account(json=json)
+    response = dm_api_facade.account.activate_registered_user(login=login)
     assert_that(response.resource, has_properties(
         {
             "login": login,

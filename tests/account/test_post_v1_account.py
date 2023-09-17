@@ -2,7 +2,7 @@ import random
 from string import ascii_letters, digits
 
 import pytest
-from hamcrest import assert_that, has_properties, has_entries
+from hamcrest import assert_that, has_entries
 
 
 def random_string(begin=1, end=30):

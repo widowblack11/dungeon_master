@@ -4,6 +4,8 @@ import pytest
 import structlog
 from vyper import v
 from pathlib import Path
+
+from generic.assertions.post_v1_account import AssertionsPostV1Account
 from generic.helpers.mailhog import MailhogApi
 from generic.helpers.orm_db import OrmDatabase
 from services.dm_account_api import Facade
@@ -47,6 +49,11 @@ def dm_db():
 
 
 @pytest.fixture
+def assertions(dm_db):
+    return AssertionsPostV1Account(dm_db)
+
+
+@pytest.fixture
 def prepare_user(dm_api_facade, dm_db):
     user = namedtuple('User', 'login, email, password')
     User = user(login=v.get('user.login'), email=v.get('user.email'), password=v.get('user.password'))
@@ -72,4 +79,3 @@ def pytest_addoption(parser):
     parser.addoption('--env', action='store', default='stg')
     for option in options:
         parser.addoption(f'--{option}', action='store', default=None)
-

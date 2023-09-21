@@ -1,5 +1,7 @@
 import uuid
+from functools import wraps
 
+import allure
 import records
 import structlog
 from sqlalchemy import create_engine
@@ -9,6 +11,25 @@ structlog.configure(
         structlog.processors.JSONRenderer(indent=4, sort_keys=True, ensure_ascii=False)
     ]
 )
+
+
+def allure_attach(func):
+    @wraps(func)
+    def wrapper(self, query):
+        allure.attach(
+            str(query.compile(compile_kwargs={"literal_binds": True})),
+            name='query',
+            attachment_type=allure.attachment_type.TEXT
+        )
+        result = func(self, query)
+        if result is not None:
+            allure.attach(
+                str(result),
+                name='query_result',
+                attachment_type=allure.attachment_type.TEXT
+            )
+        return result
+    return wrapper
 
 
 class OrmClient:
@@ -22,6 +43,7 @@ class OrmClient:
     def close_connection(self):
         self.db.close()
 
+    @allure_attach
     def send_query(self, query):
         print(query)
         log = self.log.bind(event_id=str(uuid.uuid4()))
@@ -37,6 +59,7 @@ class OrmClient:
         )
         return result
 
+    @allure_attach
     def send_bulk_query(self, query):
         print(query)
         log = self.log.bind(event_id=str(uuid.uuid4()))

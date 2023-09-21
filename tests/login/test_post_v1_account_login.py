@@ -1,10 +1,8 @@
-import time
+
 
 import structlog
-from poetry.console.commands import self
 
 from services.dm_account_api import Facade
-from generic.helpers.mailhog import MailhogApi
 
 structlog.configure(
     processors=[

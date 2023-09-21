@@ -1,3 +1,5 @@
+import allure
+
 from dm_account_api.models import Registration, ChangeEmail, ChangePassword
 
 
@@ -41,8 +43,9 @@ class Account:
         return response
 
     def get_token_from_email_for_change_password(self, login: str):
-        token_for_request_body = str(self.facade.mailhog.get_reset_password_token_by_login(login=login))
-        return token_for_request_body
+        with allure.step("Получить токен из письма для смены пароля"):
+            token_for_request_body = str(self.facade.mailhog.get_reset_password_token_by_login(login=login))
+            return token_for_request_body
 
     def change_password(self, token: str, login: str, old_password: str, new_password: str):
         response = self.facade.account_api.put_v1_account_password(

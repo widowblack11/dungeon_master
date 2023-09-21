@@ -1,12 +1,12 @@
 pytest==7.4.0
 requests==2.31.0
-structlog
-curlify
+structlog~=23.1.0
+curlify~=2.2.1
 pydantic==2.3.0
 pyhamcrest
-records
+records~=0.5.3
 psycopg2-binary
-sqlalchemy
+sqlalchemy~=1.4.49
 sqlacodegen
 vyper-config
-
+allure-pytest

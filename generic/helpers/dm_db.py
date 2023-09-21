@@ -1,3 +1,5 @@
+import allure
+
 from db_client.db_client import DbClient
 
 
@@ -6,31 +8,35 @@ class DmDatabase:
         self.db = DbClient(user, password, host, database)
 
     def get_all_users(self):
-        query = 'select * from "public"."Users"'
-        dataset = self.db.send_query(query=query)
-        return dataset
+        with allure.step("Получить всех пользователей в БД"):
+            query = 'select * from "public"."Users"'
+            dataset = self.db.send_query(query=query)
+            return dataset
 
     def get_user_by_login(self, login):
-        query = f'''
-        select * from "public"."Users"
-        where "Login" = '{login}'
-        '''
-        dataset = self.db.send_query(query=query)
-        return dataset
+        with allure.step("Получить пользователя по логину"):
+            query = f'''
+            select * from "public"."Users"
+            where "Login" = '{login}'
+            '''
+            dataset = self.db.send_query(query=query)
+            return dataset
 
     def delete_user_by_login(self, login):
-        query = f'''
-        delete from "public"."Users"
-        where "Login" = '{login}'
-        '''
-        dataset = self.db.send_bulk_query(query=query)
-        return dataset
+        with allure.step("Удалить в БД пользователя по логину"):
+            query = f'''
+            delete from "public"."Users"
+            where "Login" = '{login}'
+            '''
+            dataset = self.db.send_bulk_query(query=query)
+            return dataset
 
     def activete_user_by_login(self, login):
-        query = f'''
-        update "public"."Users"
-        set "Activated" = True
-        where "Login" = '{login}'
-        '''
-        dataset = self.db.send_bulk_query(query=query)
-        return dataset
+        with allure.step("Активировать в БД пользователя по логину"):
+            query = f'''
+            update "public"."Users"
+            set "Activated" = True
+            where "Login" = '{login}'
+            '''
+            dataset = self.db.send_bulk_query(query=query)
+            return dataset

@@ -1,5 +1,6 @@
 from collections import namedtuple
 
+import allure
 import pytest
 import structlog
 from vyper import v
@@ -36,16 +37,21 @@ options = (
     'database.dm3_5.host'
 )
 
+connect = None
+
 
 @pytest.fixture()
 def dm_db():
-    db = OrmDatabase(
-        user=v.get('database.dm3_5.user'),
-        password=v.get('database.dm3_5.password'),
-        host=v.get('database.dm3_5.host'),
-        database=v.get('database.dm3_5.database')
-    )
-    return db
+    global connect
+    if connect is None:
+        db = OrmDatabase(
+            user=v.get('database.dm3_5.user'),
+            password=v.get('database.dm3_5.password'),
+            host=v.get('database.dm3_5.host'),
+            database=v.get('database.dm3_5.database')
+        )
+        yield db
+        db.db.db.close()
 
 
 @pytest.fixture
@@ -53,6 +59,7 @@ def assertions(dm_db):
     return AssertionsPostV1Account(dm_db)
 
 
+@allure.step("Подготовка тестового пользователя")
 @pytest.fixture
 def prepare_user(dm_api_facade, dm_db):
     user = namedtuple('User', 'login, email, password')

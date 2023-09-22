@@ -8,6 +8,8 @@ from pathlib import Path
 
 from generic.assertions.post_v1_account import AssertionsPostV1Account
 from generic.helpers.mailhog import MailhogApi
+from data.post_v1_account import PostV1AccountData as user_data
+
 from generic.helpers.orm_db import OrmDatabase
 from services.dm_account_api import Facade
 
@@ -63,7 +65,7 @@ def assertions(dm_db):
 @pytest.fixture
 def prepare_user(dm_api_facade, dm_db):
     user = namedtuple('User', 'login, email, password')
-    User = user(login=v.get('user.login'), email=v.get('user.email'), password=v.get('user.password'))
+    User = user(login=user_data.login, email=user_data.email, password=user_data.password)
     dm_db.delete_user_by_login(login=User.login)
     dataset = dm_db.get_user_by_login(login=User.login)
     assert len(dataset) == 0

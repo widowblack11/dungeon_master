@@ -1,5 +1,5 @@
-from dm_account_api.models.registration_model import Registration
-from dm_account_api.models.user_envelope import UserRole
+from apis.dm_account_api.models.registration_model import Registration
+from apis.dm_account_api.models.user_envelope import UserRole
 from hamcrest import assert_that, has_properties
 
 

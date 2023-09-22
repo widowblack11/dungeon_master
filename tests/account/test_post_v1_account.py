@@ -3,7 +3,6 @@ from string import ascii_letters, digits
 
 import allure
 import pytest
-from hamcrest import assert_that, has_entries
 
 
 def random_string(begin=1, end=30):
@@ -31,30 +30,12 @@ class TestPostV1Account:
             password=password,
             status_code=201
         )
-        dataset = dm_db.get_user_by_login(login=login)
+        dm_db.get_user_by_login(login=login)
         assertions.check_user_was_created(login=login)
-        # for row in dataset:
-        #     assert_that(row, has_entries(
-        #         {
-        #             'Login': login,
-        #             'Activated': False
-        #         }
-        #     ))
-            # assert row.Login == login, f'User {login} not registered'
-            # assert row.Activated is False, f'User {login} was activated'
-
-        # response = dm_api_facade.account.activate_registered_user(login=login)
 
         dm_db.activete_user_by_login(login=login)
 
         assertions.check_user_was_activated(login=login)
-        # assert_that(response.resource.rating, has_properties(
-        #    {
-        #        "enabled": True,
-        #        "quality": 0,
-        #        "quantity": 0
-        #    }
-        # ))
 
         dm_api_facade.login.login_user(
             login=login,
@@ -109,7 +90,7 @@ class TestPostV1Account:
         )
         if status_code == 201:
             dm_api_facade.account.activate_registered_user(login=login)
-            dataset = dm_db.get_user_by_login(login=login)
+            dm_db.get_user_by_login(login=login)
             assertions.check_user_was_activated(login=login)
             dm_api_facade.login.login_user(
                 login=login,

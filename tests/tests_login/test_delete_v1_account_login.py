@@ -11,7 +11,8 @@ def test_delete_v1_account_login():
     api.account.register_new_user(
         login=login,
         email=email,
-        password=password
+        password=password,
+        status_code=201
     )
     api.account.activate_registered_user(login=login)
     api.login.login_user(

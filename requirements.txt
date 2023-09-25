@@ -1,3 +1,7 @@
+git+https://github.com/widowblack11/restclient.git
+git+https://github.com/widowblack11/orm_client.git
+git+https://github.com/widowblack11/db_client.git
+git+https://github.com/widowblack11/dm_account_api.git
 pytest==7.4.0
 requests==2.31.0
 structlog~=23.1.0
@@ -10,3 +14,4 @@ sqlalchemy~=1.4.49
 sqlacodegen
 vyper-config
 allure-pytest
+

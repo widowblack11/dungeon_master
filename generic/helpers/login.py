@@ -1,4 +1,4 @@
-from apis.dm_account_api.models import LoginCredentials
+from dm_account_api.models import LoginCredentials
 
 
 class Login:

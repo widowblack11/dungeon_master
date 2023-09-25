@@ -1,5 +1,5 @@
 import allure
-from apis.dm_account_api.models import Registration, ChangeEmail, ChangePassword
+from dm_account_api.models import Registration, ChangeEmail, ChangePassword
 
 
 class Account:

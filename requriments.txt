@@ -31,7 +31,7 @@ pytest==7.4.0
 PyYAML==6.0.1
 records==0.5.3
 requests==2.31.0
-restclient @ file:///Users/oksanaprokopenko/PycharmProjects/restclient/dist/restclient-0.0.1.tar.gz#sha256=5077eb6dac60c3ce0f93490c5e33865240b8720bd601deeddad8ade4404b4efb
+restclient @ git+https://github.com/widowblack11/restclient.git@605d2ff47c6a5eaea7e18d1dbd2d7d177640d7b3
 sqlacodegen==2.3.0.post1
 SQLAlchemy==1.4.49
 structlog==23.1.0

@@ -1,16 +1,4 @@
 
-
-import structlog
-
-from services.dm_account_api import Facade
-
-structlog.configure(
-    processors=[
-        structlog.processors.JSONRenderer(indent=4, sort_keys=True, ensure_ascii=False)
-    ]
-)
-
-
 def test_post_v1_account(prepare_user, dm_api_facade, dm_db):
     login = prepare_user.login
     email = prepare_user.email

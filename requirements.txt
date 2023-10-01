@@ -9,7 +9,7 @@ charset-normalizer==3.2.0
 curlify==2.2.1
 db-client @ git+https://github.com/widowblack11/db_client.git@4f630093bc575e7ec6f41042c99c7cc7edde800a
 distconfig3==1.0.1
-dm-account-api @ git+https://github.com/widowblack11/dm_account_api.git@e43973e10acca0b887807785f1cfb8183e5e5a96
+dm-account-api @ git+https://github.com/widowblack11/dm_account_api_generate.git@d6b6d72cbff3e33c50ff61f9db06a8d65e72a128#subdirectory=dm_account_api
 docopt==0.6.2
 et-xmlfile==1.1.0
 greenlet==2.0.2
@@ -28,10 +28,12 @@ pydantic==2.3.0
 pydantic_core==2.6.3
 PyHamcrest==2.0.4
 pytest==7.4.0
+python-dateutil==2.8.2
 PyYAML==6.0.1
 records==0.5.3
 requests==2.31.0
 restclient @ git+https://github.com/widowblack11/restclient.git@605d2ff47c6a5eaea7e18d1dbd2d7d177640d7b3
+six==1.16.0
 sqlacodegen==2.3.0.post1
 SQLAlchemy==1.4.49
 structlog==23.1.0

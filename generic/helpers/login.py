@@ -7,7 +7,7 @@ class Login:
         self.facade: Facade = facade
 
     def set_headers(self, headers):
-        self.facade.login_api.client.session.headers.update(headers)
+        self.facade.login_api.api_client.default_headers.update(headers)
 
     def login_user(self, login: str, password: str, remember_me: bool = True):
         response = self.facade.login_api.v1_account_login_post(
@@ -27,7 +27,7 @@ class Login:
         return token
 
     def logout_user(self, **kwargs):
-        response = self.facade.login_api.delete_v1_account_login(**kwargs)
+        response = self.facade.login_api.v1_account_login_delete(**kwargs)
         return response
 
     def logout_user_from_all_devices(self, **kwargs):

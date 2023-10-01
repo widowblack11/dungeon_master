@@ -1,25 +1,24 @@
-import time
 
-from services.dm_account_api import Facade
+def test_delete_v1_account_login(dm_api_facade, prepare_user, dm_db):
+    login = prepare_user.login
+    email = prepare_user.email
+    password = prepare_user.password
 
-
-def test_delete_v1_account_login():
-    api = Facade(host='http://5.63.153.31:5051')
-    login = "em0ail_t3dex44fxxddst00d888837"
-    email = "в@9ma-id3dxf44xlxdd.ru"
-    password = "tt0ed2d3xd4xfxds423fddвe2st8_25v0d2124v_139991"
-    api.account.register_new_user(
+    dm_api_facade.account.register_new_user(
         login=login,
         email=email,
-        password=password,
-        status_code=201
+        password=password
     )
-    api.account.activate_registered_user(login=login)
-    api.login.login_user(
+    dm_db.activete_user_by_login(login=login)
+    dm_api_facade.login.login_user(
         login=login,
         password=password
     )
-    token = api.login.get_auth_token(login=login, password=password)
-    api.account.set_headers(headers=token)
-    api.login.set_headers(headers=token)
-    api.login.logout_user()
+    token = dm_api_facade.login.get_auth_token(login=login, password=password)
+    headers = {'X-Dm-Auth-Token': token}
+    dm_api_facade.account.set_headers(headers=headers)
+    dm_api_facade.login.set_headers(headers=headers)
+
+    dm_api_facade.login.logout_user(x_dm_auth_token=headers['X-Dm-Auth-Token'])
+
+

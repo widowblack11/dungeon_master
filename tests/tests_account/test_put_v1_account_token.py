@@ -1,5 +1,5 @@
-from apis.dm_account_api.models.registration_model import Registration
-from apis.dm_account_api.models.user_envelope import UserRole
+from dm_account_api.model.registration import Registration
+from dm_account_api.model.user_role import UserRole
 from hamcrest import assert_that, has_properties
 
 
@@ -12,13 +12,17 @@ def test_put_v1_account_token(dm_api_facade, prepare_user):
         email=email,
         password=password
     )
-    dm_api_facade.account_api.post_v1_account(json=json)
+    dm_api_facade.account_api.register(
+        registration=Registration(
+            login=login,
+            email=email,
+            password=password
+    ))
     response = dm_api_facade.account.activate_registered_user(login=login)
     assert_that(response.resource, has_properties(
         {
             "login": login,
-            "roles": [UserRole.guest, UserRole.player],
-            "status": None
+            "roles": [UserRole('Guest'), UserRole('Player')]
         }
     ))
 

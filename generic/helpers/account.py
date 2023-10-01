@@ -38,8 +38,8 @@ class Account:
         return response
 
     def change_email_for_user(self, login: str, email: str, password: str):
-        response = self.facade.account_api.put_v1_account_email(
-            json=ChangeEmail(
+        response = self.facade.account_api.change_email(
+            change_email=ChangeEmail(
                 login=login,
                 email=email,
                 password=password
@@ -52,11 +52,11 @@ class Account:
             return token_for_request_body
 
     def change_password(self, token: str, login: str, old_password: str, new_password: str):
-        response = self.facade.account_api.put_v1_account_password(
-            json=ChangePassword(
+        response = self.facade.account_api.change_password(
+            change_password=ChangePassword(
                 login=login,
                 token=token,
-                oldPassword=old_password,
-                newPassword=new_password
+                old_password=old_password,
+                new_password=new_password
             ))
         return response

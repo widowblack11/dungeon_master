@@ -1,4 +1,5 @@
 import allure
+from dm_account_api.model.user_details_envelope import UserDetailsEnvelope
 from dm_account_api.models import Registration, ChangeEmail, ChangePassword
 
 
@@ -8,28 +9,32 @@ class Account:
         self.facade: Facade = facade
 
     def set_headers(self, headers):
-        self.facade.account_api.client.session.headers.update(headers)
+        self.facade.account_api.api_client.default_headers.update(headers)
 
-    def register_new_user(self, login: str, email: str, password: str, status_code):
-        response = self.facade.account_api.post_v1_account(
-            status_code=status_code,
-            json=Registration(
-                login=login,
-                email=email,
-                password=password
-            )
+    def register_new_user(self, login: str, email: str, password: str):
+        response = self.facade.account_api.register(
+            _return_http_data_only=False,
+            registration=Registration(
+                    login=login,
+                    email=email,
+                    password=password
+                )
         )
         return response
 
     def activate_registered_user(self, login: str):
         token = self.facade.mailhog.get_token_by_login(login=login)
-        response = self.facade.account_api.put_v1_account_token(
+        response = self.facade.account_api.activate(
             token=token
         )
         return response
 
     def get_current_user_info(self, **kwargs):
-        response = self.facade.account_api.get_v1_account(**kwargs)
+        response = self.facade.account_api.get_current(
+            _return_http_data_only=False,
+            _check_return_type=False,
+            **kwargs,
+        )
         return response
 
     def change_email_for_user(self, login: str, email: str, password: str):

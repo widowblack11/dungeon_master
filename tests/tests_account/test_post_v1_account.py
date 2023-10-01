@@ -4,6 +4,8 @@ from string import ascii_letters, digits
 import allure
 import pytest
 
+from generic.assertions.responce_checker import check_status_code_http
+
 
 def random_string(begin=1, end=30):
     symbols = ascii_letters + digits
@@ -16,6 +18,22 @@ def random_string(begin=1, end=30):
 @allure.suite("Тесты на проверку метода POST{host}/v1/account")
 @allure.sub_suite("Позитивные проверки")
 class TestPostV1Account:
+    random_email = f'{random_string()}@{random_string()}.{random_string()}'
+    valid_login = random_string(2)
+    invalid_login = random_string(1, 1)
+    valid_password = random_string(6)
+    invalid_password = random_string(1, 5)
+    invalid_email = f'{random_string(6)}@'
+    invalid_email_1 = random_string(1, 2).replace('@', '')
+
+    random_data = [
+        ('12', '12@12.ru', '123456', 201, None),
+        ('12', '12@12.ru', random_string(1, 5), 400, {"Password": ["Short"]}),
+        ('1', '12@12.ru', '123456', 400, {"Login": ["Short"]}),
+        ('12', '12@', '123456', 400, {"Email": ["Invalid"]}),
+        ('12', '12', '123456', 400, {"Email": ["Invalid"]})
+    ]
+
     @allure.title("Проверка создания и активации пользователя")
     def test_post_v1_account(self, dm_api_facade, dm_db, prepare_user, assertions):
         """
@@ -27,8 +45,7 @@ class TestPostV1Account:
         dm_api_facade.account.register_new_user(
             login=login,
             email=email,
-            password=password,
-            status_code=201
+            password=password
         )
         dm_db.get_user_by_login(login=login)
         assertions.check_user_was_created(login=login)
@@ -50,8 +67,7 @@ class TestPostV1Account:
         dm_api_facade.account.register_new_user(
             login=login,
             email=email,
-            password=password,
-            status_code=201
+            password=password
         )
         assertions.check_user_was_created(login=login)
 
@@ -62,13 +78,7 @@ class TestPostV1Account:
             password=password
         )
 
-    @pytest.mark.parametrize('login, email, password, status_code,check', [
-        ('12', '12@12.ru', '123456', 201, ''),
-        ('12', '12@12.ru', random_string(1, 5), 400, {"Password": ["Short"]}),
-        ('1', '12@12.ru', '123456', 400, {"Login": ["Short"]}),
-        ('12', '12@', '123456', 400, {"Email": ["Invalid"]}),
-        ('12', '12', '123456', 400, {"Email": ["Invalid"]})
-    ])
+    @pytest.mark.parametrize('login, email, password, status_code,check', random_data)
     def test_create_and_activated_user_with_random_params(
             self,
             dm_api_facade,
@@ -82,20 +92,20 @@ class TestPostV1Account:
     ):
         dm_db.delete_user_by_login(login=login)
         dm_api_facade.mailhog.delete_all_messages()
-        response = dm_api_facade.account.register_new_user(
-            login=login,
-            email=email,
-            password=password,
-            status_code=status_code
-        )
-        if status_code == 201:
-            dm_api_facade.account.activate_registered_user(login=login)
-            dm_db.get_user_by_login(login=login)
-            assertions.check_user_was_activated(login=login)
-            dm_api_facade.login.login_user(
+        with check_status_code_http(expected_status_code=status_code, expected_result=check):
+            response = dm_api_facade.account.register_new_user(
                 login=login,
+                email=email,
                 password=password
             )
-        else:
-            assert response.json()['errors'] == check, \
-                f'Тело ответа должно быть равно {check}, но он равен {response}'
+            if status_code == 201:
+                dm_api_facade.account.activate_registered_user(login=login)
+                dm_db.get_user_by_login(login=login)
+                assertions.check_user_was_activated(login=login)
+                dm_api_facade.login.login_user(
+                    login=login,
+                    password=password
+                )
+            else:
+                assert response == check, \
+                    f'Тело ответа должно быть равно {check}, но он равен {response}'

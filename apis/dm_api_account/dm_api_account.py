@@ -32,9 +32,8 @@ def grpc_logging(func):
     return wrapper
 
 
-
 class DmApiAccount:
-    def __init__(self, target='5.63.153.31:5055'):
+    def __init__(self, target):
         self.target = target
         self.channel = grpc.insecure_channel(target=self.target)
         self.client = AccountServiceStub(channel=self.channel)
@@ -45,16 +44,7 @@ class DmApiAccount:
         response = self.client.RegisterAccount(request=request)
         return response
 
-structlog.configure(
-    processors=[
-        structlog.processors.JSONRenderer(indent=4, sort_keys=True, ensure_ascii=False)
-    ]
-)
+    def close(self):
+        self.channel.close()
 
-response = DmApiAccount().account(
-        request=RegisterAccountRequest(
-            login='testаfаd123111',
-            email='tesfаrаdwwww@mail.ru',
-            password='tesаfdt123111'
-        )
-    )
+

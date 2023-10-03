@@ -12,5 +12,4 @@ vyper-config
 allure-pytest
 grpcio-tools
 mypy-protobuf
-grpcio-tools
 google

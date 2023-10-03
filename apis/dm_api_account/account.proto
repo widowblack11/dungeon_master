@@ -1,0 +1,256 @@
+syntax = "proto3";
+
+option csharp_namespace = "DM.Web.Api.Grpc.Account";
+
+import 'google/protobuf/empty.proto';
+import 'google/protobuf/timestamp.proto';
+import 'google/protobuf/wrappers.proto';
+
+service AccountService {
+  rpc Login(LoginRequest) returns (LoginResponse);
+  rpc Logout(LogoutRequest) returns (google.protobuf.Empty);
+  rpc LogoutAll(LogoutAllRequest) returns (google.protobuf.Empty);
+  rpc GetCurrentAccount(GetCurrentAccountRequest) returns (GetCurrentAccountResponse);
+  rpc GetAccounts(GetAccountsRequest) returns (GetAccountsResponse);
+  rpc RegisterAccount(RegisterAccountRequest) returns (RegisterAccountResponse);
+  rpc ActivateAccount(ActivateAccountRequest) returns (ActivateAccountResponse);
+  rpc ChangeAccountEmail(ChangeAccountEmailRequest) returns (ChangeAccountEmailResponse);
+  rpc ResetAccountPassword(ResetAccountPasswordRequest) returns (ResetAccountPasswordResponse);
+  rpc ChangeAccountPassword(ChangeAccountPasswordRequest) returns (ChangeAccountPasswordResponse);
+  rpc UpdateAccount(UpdateAccountRequest) returns (UpdateAccountResponse);
+  rpc RegisterAccountClientStream(stream RegisterAccountRequest) returns (RegisterAccountClientStreamResponse);
+  rpc GetAccountsServerStream(google.protobuf.Empty) returns (stream User);
+  rpc GetAccountsByLoginDuplexStream(stream GetAccountsByLoginRequest) returns (stream GetAccountsByLoginResponse);
+}
+
+message LoginRequest {
+  string login = 1;
+  string password = 2;
+  bool remember_me = 3;
+}
+
+message LoginResponse {
+  UserEnvelope user = 1;
+  string token = 2;
+}
+
+message LogoutRequest {
+  string token = 1;
+}
+
+message LogoutAllRequest {
+  string token = 1;
+}
+
+message GetCurrentAccountRequest {
+  string token = 1;
+}
+
+message GetCurrentAccountResponse {
+  UserDetailsEnvelope user = 1;
+}
+
+message GetAccountsRequest {
+  bool with_inactive = 1;
+  PagingQuery paging = 2;
+}
+
+message GetAccountsResponse {
+  repeated User accounts = 1;
+  PagingResult paging = 2;
+}
+
+message RegisterAccountRequest {
+  string login = 1;
+  string email = 2;
+  string password = 3;
+}
+
+message RegisterAccountResponse {
+  string id = 1;
+  string login = 2;
+}
+
+message RegisterAccountClientStreamResponse {
+  repeated Result results = 1;
+  message Result {
+    string login = 1;
+    oneof result {
+      string id = 2;
+      string error = 3;
+    }
+  }
+}
+
+message ActivateAccountRequest {
+  string activation_token = 1;
+}
+
+message ActivateAccountResponse {
+  UserEnvelope user = 1;
+}
+
+message ChangeAccountEmailRequest {
+  string login = 1;
+  string password = 2;
+  string email = 3;
+}
+
+message ChangeAccountEmailResponse {
+  UserEnvelope user = 1;
+}
+
+message ResetAccountPasswordRequest {
+  string login = 1;
+  string email = 2;
+}
+
+message ResetAccountPasswordResponse {
+  UserEnvelope user = 1;
+}
+
+message ChangeAccountPasswordRequest {
+  string login = 1;
+  google.protobuf.StringValue token = 2;
+  string old_password = 3;
+  string new_password = 4;
+}
+
+message ChangeAccountPasswordResponse {
+  UserEnvelope user = 1;
+}
+
+message UpdateAccountRequest {
+  string token = 1;
+  UserUpdate user_data = 2;
+}
+
+message UpdateAccountResponse {
+  UserDetailsEnvelope user = 1;
+}
+
+message TimestampValue {
+  google.protobuf.Timestamp value = 1;
+}
+
+enum UserRole {
+  Guest = 0;
+  Player = 1;
+  Administrator = 2;
+  NannyModerator = 3;
+  RegularModerator = 4;
+  SeniorModerator = 5;
+}
+
+enum ColorSchema {
+  Modern = 0;
+  Pale = 1;
+  Classic = 2;
+  ClassicPale = 3;
+  Night = 4;
+}
+
+enum AccessPolicy {
+  NotSpecified = 0;
+  DemocraticBan = 1;
+  FullBan = 2;
+  ChatBan = 3;
+  RestrictContentEditing = 4;
+}
+
+message UserRating {
+  bool enabled = 1;
+  int32 quality = 2;
+  int32 quantity = 3;
+}
+
+message User {
+  string login = 1;
+  repeated UserRole roles = 2;
+  google.protobuf.StringValue medium_picture_url = 3;
+  google.protobuf.StringValue small_picture_url = 4;
+  google.protobuf.StringValue status = 5;
+  UserRating rating = 6;
+  TimestampValue online = 7;
+  google.protobuf.StringValue name = 8;
+  google.protobuf.StringValue location = 9;
+  TimestampValue registration = 10;
+}
+
+message UserDetails {
+  string login = 1;
+  repeated UserRole roles = 2;
+  google.protobuf.StringValue original_picture_url = 3;
+  google.protobuf.StringValue medium_picture_url = 4;
+  google.protobuf.StringValue small_picture_url = 5;
+  google.protobuf.StringValue status = 6;
+  UserRating rating = 7;
+  TimestampValue online = 8;
+  google.protobuf.StringValue name = 9;
+  google.protobuf.StringValue location = 10;
+  TimestampValue registration = 11;
+  google.protobuf.StringValue icq = 12;
+  google.protobuf.StringValue skype = 13;
+  google.protobuf.StringValue info = 14;
+}
+
+message UserUpdate {
+  google.protobuf.StringValue status = 1;
+  google.protobuf.BoolValue rating_disabled = 2;
+  google.protobuf.StringValue name = 3;
+  google.protobuf.StringValue location = 4;
+  google.protobuf.StringValue icq = 5;
+  google.protobuf.StringValue skype = 6;
+  google.protobuf.StringValue info = 7;
+  UserSettings user_settings = 8;
+}
+
+message UserSettings {
+  ColorSchema color_schema = 1;
+  string nanny_greetings_message = 2;
+  PagingSettings paging_settings = 3;
+}
+
+message PagingQuery {
+  google.protobuf.Int32Value size = 1;
+  google.protobuf.Int32Value number = 2;
+  google.protobuf.Int32Value skip = 3;
+}
+
+message PagingResult {
+  int32 total_pages_count = 1;
+  int32 total_entities_count = 2;
+  int32 current_page = 3;
+  int32 page_size = 4;
+  int32 entity_number = 5;
+}
+
+message PagingSettings {
+  int32 posts_per_page = 1;
+  int32 comments_per_page = 2;
+  int32 topics_per_page = 3;
+  int32 messages_per_page = 4;
+  int32 entities_per_page = 5;
+}
+
+message UserEnvelope {
+  User resource = 1;
+  google.protobuf.StringValue metadata = 2;
+}
+
+message UserDetailsEnvelope {
+  UserDetails resource = 1;
+  google.protobuf.StringValue metadata = 2;
+}
+
+message GetAccountsByLoginRequest {
+  string login = 1;
+}
+
+message GetAccountsByLoginResponse {
+  string login = 1;
+  oneof result {
+    User user = 2;
+    string error = 3;
+  }
+}

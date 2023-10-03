@@ -7,6 +7,8 @@ from vyper import v
 from pathlib import Path
 
 from generic.assertions.post_v1_account import AssertionsPostV1Account
+from generic.helpers.account_grpc import AccountGrpc
+
 from generic.helpers.mailhog import MailhogApi
 from data.post_v1_account import PostV1AccountData as user_data
 
@@ -54,6 +56,13 @@ def dm_db():
         )
         yield db
         db.db.db.close()
+
+
+@pytest.fixture
+def grpc_account():
+    client = AccountGrpc(target='5.63.153.31:5052')
+    yield client
+    client.close()
 
 
 @pytest.fixture

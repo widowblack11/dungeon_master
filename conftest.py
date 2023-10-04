@@ -1,6 +1,7 @@
 from collections import namedtuple
 
 import allure
+import grpc
 import pytest
 import structlog
 from vyper import v
@@ -14,6 +15,8 @@ from data.post_v1_account import PostV1AccountData as user_data
 
 from generic.helpers.orm_db import OrmDatabase
 from services.dm_account_api import Facade
+from apis.dm_api_account_async import AccountServiceStub
+from grpclib.client import Channel
 
 structlog.configure(
     processors=[
@@ -60,9 +63,17 @@ def dm_db():
 
 @pytest.fixture
 def grpc_account():
-    client = AccountGrpc(target='5.63.153.31:5052')
+    client = AccountGrpc(target='5.63.153.31:5055')
     yield client
     client.close()
+
+
+@pytest.fixture
+def grpc_account_async():
+    channel = Channel(host='5.63.153.31', port=5055)
+    client = AccountServiceStub(channel)
+    yield client
+    channel.close()
 
 
 @pytest.fixture

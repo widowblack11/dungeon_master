@@ -63,14 +63,14 @@ def dm_db():
 
 @pytest.fixture
 def grpc_account():
-    client = AccountGrpc(target='5.63.153.31:5055')
+    client = AccountGrpc(target=v.get('service.target'))
     yield client
     client.close()
 
 
 @pytest.fixture
 def grpc_account_async():
-    channel = Channel(host='5.63.153.31', port=5055)
+    channel = Channel(host=v.get('service.host'), port=5055)
     client = AccountServiceStub(channel)
     yield client
     channel.close()

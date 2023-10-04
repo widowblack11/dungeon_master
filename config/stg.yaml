@@ -1,6 +1,9 @@
 service:
   dm_api_account: http://5.63.153.31:5051
   mailhog: http://5.63.153.31:5025
+  target: 5.63.153.31:5055
+  host: 5.63.153.31
+  port: 5055
 
 database:
   dm3_5:
@@ -14,3 +17,4 @@ user:
   login: tx3fdde4-fdrdst37
   email: в@9dmtdxd.ru
   password: ttetdddвe_139991
+

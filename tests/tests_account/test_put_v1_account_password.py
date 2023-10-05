@@ -1,4 +1,4 @@
-from apis.dm_account_api.models import ResetPassword
+from dm_account_api.models import ResetPassword
 
 
 def test_put_v1_account_password(dm_api_facade, prepare_user):

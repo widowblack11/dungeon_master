@@ -1,6 +1,6 @@
 from hamcrest import assert_that, has_properties
 
-from apis.dm_account_api.models.change_email import ChangeEmail
+from dm_account_api.models.change_email import ChangeEmail
 
 
 def test_post_v1_account(dm_api_facade, prepare_user):

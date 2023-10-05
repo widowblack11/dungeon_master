@@ -1,3 +1,8 @@
+from hamcrest import assert_that, has_properties
+
+from apis.dm_account_api.models.user_details_envelope import UserRole
+
+
 def test_get_v1_account(dm_api_facade, prepare_user):
     login = prepare_user.login
     email = prepare_user.email
@@ -15,10 +20,13 @@ def test_get_v1_account(dm_api_facade, prepare_user):
     )
     token = dm_api_facade.login.get_auth_token(login=login, password=password)
     dm_api_facade.account.set_headers(headers=token)
-    dm_api_facade.account.get_current_user_info()
-
-
-
+    response = dm_api_facade.account.get_current_user_info()
+    assert_that(response.resource, has_properties(
+        {
+            "login": login,
+            "roles": [UserRole.guest, UserRole.player]
+        }
+    ))
 
 ## response = get_v1_account()
 ## print(response)

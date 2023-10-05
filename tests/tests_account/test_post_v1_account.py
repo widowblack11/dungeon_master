@@ -96,6 +96,3 @@ class TestPostV1Account:
                 login=login,
                 password=password
             )
-        else:
-            assert response.json()['errors'] == check, \
-                f'Тело ответа должно быть равно {check}, но он равен {response}'

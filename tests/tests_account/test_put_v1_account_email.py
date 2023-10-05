@@ -3,7 +3,7 @@ from hamcrest import assert_that, has_properties
 from apis.dm_account_api.models.change_email import ChangeEmail
 
 
-def test_post_v1_account(dm_api_facade, prepare_user):
+def test_put_v1_account(dm_api_facade, prepare_user):
     login = prepare_user.login
     email = prepare_user.email
     password = prepare_user.password

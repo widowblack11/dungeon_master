@@ -7,12 +7,12 @@ from apis.dm_api_account.account_pb2 import RegisterAccountRequest
 
 
 def test_account(grpc_account):
-    login = '12tefffffsvt4fаftd129'
+    login = '12tef4fffffsdvt4fа6ftd129'
     response = grpc_account.grpc_account.account(
         RegisterAccountRequest(
             login=login,
-            email='12tfefаvfffsfrf9ww@mail.ru',
-            password='12tevffffff59tаsfdt123111'
+            email='12t4fedff6аvfffsfrf9ww@mail.ru',
+            password='12tevd4f6ffffff59tаsfdt123111'
         )
     )
 
